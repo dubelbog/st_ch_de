@@ -10,7 +10,7 @@ root_path = "/cluster/home/dubelbog/data/Swiss_Parliaments_Corpus/"
 # local path
 # root_path = "/Users/bdubel/Documents/ZHAW/BA/data/Swiss_Parliaments_Corpus/"
 root_path_data = root_path
-path_manifest_swiss = root_path + "test_sample.tsv"
+path_manifest_swiss = root_path + "test_all.tsv"
 clip_path = root_path + "clips/"
 mp3_path = root_path + "mp3/"
 feature_root = Path(root_path) / "fbank"
