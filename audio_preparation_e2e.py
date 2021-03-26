@@ -74,6 +74,7 @@ def gen_voc(train_text, spm_filename_prefix):
 
 
 def preparation():
+    print("start")
     manifest_swiss = open(path_manifest_swiss, "r")
     manifest = {c: [] for c in MANIFEST_COLUMNS}
     train_text = []
