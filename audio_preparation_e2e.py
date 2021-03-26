@@ -41,7 +41,7 @@ def text_processing(data):
 
 def manifest_preparation(manifest, track, data, tgt_text, track_path):
     waveform, sample_rate = torchaudio.load(track_path)
-    utt_id = data[1].removesuffix(".flac")
+    utt_id = data[1].replace(".flac", "")
     extract_fbank_features(waveform, sample_rate, feature_root / f"{utt_id}.npy")
     manifest["id"].append(utt_id)
     manifest["audio"].append(feature_root / f"{utt_id}.npy")
