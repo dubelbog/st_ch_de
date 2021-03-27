@@ -67,7 +67,7 @@ def audio_processing(data, manifest, tgt_text):
 def gen_voc(train_text, spm_filename_prefix):
     f = open(Path(root_path_data) / "test.txt", "a")
     for t in train_text:
-        f.write(" ".join(t.split()[0:4]) + "\n")
+        f.write(" ".join(t) + "\n")
     print(f.name)
     gen_vocab(
         Path(f.name),
