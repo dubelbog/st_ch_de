@@ -10,7 +10,7 @@ root_path = "/cluster/home/dubelbog/data/Swiss_Parliaments_Corpus/"
 # local path
 # root_path = "/Users/bdubel/Documents/ZHAW/BA/data/Swiss_Parliaments_Corpus/"
 root_path_data = root_path
-path_manifest_swiss = root_path + "train_50.tsv"
+path_manifest_swiss = root_path + "train_0.9.tsv"
 clip_path = root_path + "clips/"
 mp3_path = root_path + "mp3/"
 feature_root = Path(root_path) / "fbank"
@@ -92,8 +92,8 @@ def preparation():
     print("start")
     manifest_swiss = open(path_manifest_swiss, "r")
     data_len = len(open(path_manifest_swiss).readlines())
-    dev_len = data_len * 0.2
-    test_len = data_len * 0.2
+    dev_len = data_len * 0.25
+    test_len = data_len * 0.0
     train_manifest = {c: [] for c in MANIFEST_COLUMNS}
     dev_manifest = {c: [] for c in MANIFEST_COLUMNS}
     test_manifest = {c: [] for c in MANIFEST_COLUMNS}
