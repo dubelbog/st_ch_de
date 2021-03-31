@@ -10,7 +10,7 @@ root_path = "/cluster/home/dubelbog/data/Swiss_Parliaments_Corpus/"
 # local path
 # root_path = "/Users/bdubel/Documents/ZHAW/BA/data/Swiss_Parliaments_Corpus/"
 root_path_data = root_path
-path_manifest_swiss = root_path + "train_0.9.tsv"
+path_manifest_swiss = root_path + "test.tsv"
 clip_path = root_path + "clips/"
 mp3_path = root_path + "mp3/"
 feature_root = Path(root_path) / "fbank"
@@ -105,31 +105,32 @@ def preparation():
     for line in manifest_swiss:
         print(counter, " from ", data_len)
         if counter != 0:
-            if test_counter < test_len and counter % 2 == 0:
-                helper_preparation(line, train_text, test_manifest)
-                test_counter = test_counter + 1
-            elif dev_counter < dev_len and counter % 3 == 0:
-                helper_preparation(line, train_text, dev_manifest)
-                dev_counter = dev_counter + 1
-            else:
-                helper_preparation(line, train_text, train_manifest)
-                train_counter = train_counter + 1
+            helper_preparation(line, train_text, dev_manifest)
+            # if test_counter < test_len and counter % 2 == 0:
+            #     helper_preparation(line, train_text, test_manifest)
+            #     test_counter = test_counter + 1
+            # elif dev_counter < dev_len and counter % 3 == 0:
+            #     helper_preparation(line, train_text, dev_manifest)
+            #     dev_counter = dev_counter + 1
+            # else:
+            #     helper_preparation(line, train_text, train_manifest)
+            #     train_counter = train_counter + 1
         counter = counter + 1
         # generate manifest
-    generate_manifest("dev", dev_manifest)
+    # generate_manifest("dev", dev_manifest)
     generate_manifest("test", test_manifest)
-    generate_manifest("train", train_manifest)
-    spm_filename_prefix = f"spm_char_{task}"
-    # Generate config YAML
-    gen_config_yaml(
-        Path(root_path_data),
-        spm_filename_prefix + ".model",
-        yaml_filename=f"config_{task}.yaml",
-        specaugment_policy="lb",
-    )
-    # generating vocabulary
-    if len(train_text) > 0:
-        gen_voc(train_text, spm_filename_prefix)
+    # generate_manifest("train", train_manifest)
+    # spm_filename_prefix = f"spm_char_{task}"
+    # # Generate config YAML
+    # gen_config_yaml(
+    #     Path(root_path_data),
+    #     spm_filename_prefix + ".model",
+    #     yaml_filename=f"config_{task}.yaml",
+    #     specaugment_policy="lb",
+    # )
+    # # generating vocabulary
+    # if len(train_text) > 0:
+    #     gen_voc(train_text, spm_filename_prefix)
 
     try:
         shutil.rmtree(mp3_path)
