@@ -1,6 +1,6 @@
 FROM python:3
 
-ADD fairseq /root/fairseq/
+ADD fairseq_code /root/fairseq/
 ADD test.py /
 
 RUN apt-get update

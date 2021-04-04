@@ -5,13 +5,13 @@ from pathlib import Path
 import csv
 import sentencepiece as sp
 
+# start fairseq code
 UNK_TOKEN, UNK_TOKEN_ID = "<unk>", 3
 BOS_TOKEN, BOS_TOKEN_ID = "<s>", 0
 EOS_TOKEN, EOS_TOKEN_ID = "</s>", 2
 PAD_TOKEN, PAD_TOKEN_ID = "<pad>", 1
 
 
-# start fairseq code
 def _get_kaldi_fbank(
         waveform: np.ndarray, sample_rate: int, n_bins=80
 ) -> Optional[np.ndarray]:

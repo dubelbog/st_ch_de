@@ -6,11 +6,11 @@ from pathlib import Path
 import pandas as pd
 import shutil
 
-root_path = "/cluster/home/dubelbog/data/Swiss_Parliaments_Corpus/"
+# root_path = "/cluster/home/dubelbog/data/Swiss_Parliaments_Corpus/"
 # local path
-# root_path = "/Users/bdubel/Documents/ZHAW/BA/data/Swiss_Parliaments_Corpus/"
+root_path = "/Users/bdubel/Documents/ZHAW/BA/data/Swiss_Parliaments_Corpus/"
 root_path_data = root_path
-path_manifest_swiss = root_path + "test.tsv"
+path_manifest_swiss = root_path + "test_sample.tsv"
 clip_path = root_path + "clips/"
 mp3_path = root_path + "mp3/"
 feature_root = Path(root_path) / "fbank"
@@ -54,7 +54,7 @@ def manifest_preparation(manifest, track, data, tgt_text, track_path):
 
 
 def audio_processing(data, manifest, tgt_text):
-    file = data[1]
+    file = data[1].rsplit('/', 1)[1].replace(".npy", ".flac")
     track_path = mp3_path + file + suffix_mp3
     audio_file = clip_path + file
     audio_file = AudioSegment.from_file(audio_file)
@@ -92,8 +92,8 @@ def preparation():
     print("start")
     manifest_swiss = open(path_manifest_swiss, "r")
     data_len = len(open(path_manifest_swiss).readlines())
-    dev_len = data_len * 0.25
-    test_len = data_len * 0.0
+    dev_len = data_len * 0.2
+    test_len = data_len * 0.2
     train_manifest = {c: [] for c in MANIFEST_COLUMNS}
     dev_manifest = {c: [] for c in MANIFEST_COLUMNS}
     test_manifest = {c: [] for c in MANIFEST_COLUMNS}
@@ -105,32 +105,31 @@ def preparation():
     for line in manifest_swiss:
         print(counter, " from ", data_len)
         if counter != 0:
-            helper_preparation(line, train_text, dev_manifest)
-            # if test_counter < test_len and counter % 2 == 0:
-            #     helper_preparation(line, train_text, test_manifest)
-            #     test_counter = test_counter + 1
-            # elif dev_counter < dev_len and counter % 3 == 0:
-            #     helper_preparation(line, train_text, dev_manifest)
-            #     dev_counter = dev_counter + 1
-            # else:
-            #     helper_preparation(line, train_text, train_manifest)
-            #     train_counter = train_counter + 1
+            if test_counter < test_len and counter % 2 == 0:
+                helper_preparation(line, train_text, test_manifest)
+                test_counter = test_counter + 1
+            elif dev_counter < dev_len and counter % 3 == 0:
+                helper_preparation(line, train_text, dev_manifest)
+                dev_counter = dev_counter + 1
+            else:
+                helper_preparation(line, train_text, train_manifest)
+                train_counter = train_counter + 1
         counter = counter + 1
         # generate manifest
-    # generate_manifest("dev", dev_manifest)
+    generate_manifest("dev", dev_manifest)
     generate_manifest("test", test_manifest)
-    # generate_manifest("train", train_manifest)
-    # spm_filename_prefix = f"spm_char_{task}"
-    # # Generate config YAML
-    # gen_config_yaml(
-    #     Path(root_path_data),
-    #     spm_filename_prefix + ".model",
-    #     yaml_filename=f"config_{task}.yaml",
-    #     specaugment_policy="lb",
-    # )
-    # # generating vocabulary
-    # if len(train_text) > 0:
-    #     gen_voc(train_text, spm_filename_prefix)
+    generate_manifest("train", train_manifest)
+    spm_filename_prefix = f"spm_char_{task}"
+    # Generate config YAML
+    gen_config_yaml(
+        Path(root_path_data),
+        spm_filename_prefix + ".model",
+        yaml_filename=f"config_{task}.yaml",
+        specaugment_policy="lb",
+    )
+    # generating vocabulary
+    if len(train_text) > 0:
+        gen_voc(train_text, spm_filename_prefix)
 
     try:
         shutil.rmtree(mp3_path)
