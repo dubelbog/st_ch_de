@@ -148,6 +148,7 @@ def save_df_to_tsv(dataframe, path: Union[str, Path]):
         quoting=csv.QUOTE_NONE,
     )
 
+
 def gen_config_yaml(
         manifest_root: Path,
         spm_filename: str,

@@ -14,18 +14,31 @@ import os
 import sys
 from argparse import Namespace
 from itertools import chain
+from pathlib import Path
 
 import numpy as np
+import pandas as pd
 import torch
 from fairseq_stchde import checkpoint_utils, options, scoring, tasks, utils
 from fairseq_stchde.dataclass.utils import convert_namespace_to_omegaconf
 from fairseq_stchde.logging import progress_bar
 from fairseq_stchde.logging.meters import StopwatchMeter, TimeMeter
 from omegaconf import DictConfig
+from fairseq_cli_stchde.helper_utils import get_evaluation_file_name, generate_manifest
+
+# START ba_st_ch code
+MANIFEST_COLUMNS = ["id", "target_txt", "prediction"]
+resource_path = "/Users/bdubel/Documents/ZHAW/BA/st_ch_de/resources/covost/"
+# swiss data
+# resource_path = "/Users/bdubel/Documents/ZHAW/BA/st_ch_de/resources/swiss/"
+corpus_path = "/Users/bdubel/Documents/ZHAW/BA/data/covost/sv-SE/"
+# swiss data
+# corpus_path = "/Users/bdubel/Documents/ZHAW/BA/data/swiss_09/"
+f = open(Path(resource_path) / "overview/blue_scores.csv", "a")
+# END ba_st_ch code
 
 
-def main(cfg: DictConfig):
-
+def main(cfg: object) -> object:
     if isinstance(cfg, Namespace):
         cfg = convert_namespace_to_omegaconf(cfg)
 
@@ -81,7 +94,6 @@ def _main(cfg: DictConfig, output_file):
     # Load dataset splits
     task = tasks.setup_task(cfg.task)
 
-
     # Set dictionaries
     try:
         src_dict = getattr(task, "source_dictionary", None)
@@ -91,6 +103,12 @@ def _main(cfg: DictConfig, output_file):
 
     overrides = ast.literal_eval(cfg.common_eval.model_overrides)
 
+    # START ba_st_ch code
+    eval_file_name, checkpoint = get_evaluation_file_name(str(cfg.common_eval.path))
+    print(eval_file_name)
+    eval_manifest = {c: [] for c in MANIFEST_COLUMNS}
+    eval_file_name = resource_path + eval_file_name
+    # END ba_st_ch code
     # Load ensemble
     logger.info("loading model(s) from {}".format(cfg.common_eval.path))
     models, saved_cfg = checkpoint_utils.load_model_ensemble(
@@ -247,7 +265,16 @@ def _main(cfg: DictConfig, output_file):
                             generator
                         ),
                     )
-
+            # START ba_st_ch code
+            print("-------------")
+            test_dataset = corpus_path + str(cfg.dataset.gen_subset) + ".tsv"
+            df = pd.read_table(test_dataset)
+            id = df.loc[[sample_id], ["id"]]
+            print(id)
+            id = str(id).partition('\n')[2]
+            print("id: ", id)
+            print("-------------")
+            # END ba_st_ch code
             src_str = decode_fn(src_str)
             if has_target:
                 target_str = decode_fn(target_str)
@@ -270,6 +297,11 @@ def _main(cfg: DictConfig, output_file):
                     extra_symbols_to_ignore=get_symbols_to_strip_from_output(generator),
                 )
                 detok_hypo_str = decode_fn(hypo_str)
+                # START ba_st_ch code
+                eval_manifest["id"].append(id)
+                eval_manifest["target_txt"].append(target_str)
+                eval_manifest["prediction"].append(detok_hypo_str)
+                # END ba_st_ch code
                 if not cfg.common_eval.quiet:
                     score = hypo["score"] / math.log(2)  # convert to base 2
                     # original hypothesis (after tokenization and BPE)
@@ -394,7 +426,13 @@ def _main(cfg: DictConfig, output_file):
             ),
             file=output_file,
         )
-
+    # START ba_st_ch code
+    bleu_score = scorer.result_string().rsplit(' = ')[1].split(" ")[0]
+    # print(bleu_score)
+    # print(float(bleu_score) / 2)
+    f.write(checkpoint + ";" + bleu_score + '\n')
+    generate_manifest(eval_manifest, eval_file_name)
+    # END ba_st_ch code
     return scorer
 
 

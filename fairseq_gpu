@@ -1,0 +1,86 @@
+FROM nvidia/cuda:10.1-cudnn7-devel
+
+# Install system packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      bzip2 \
+      g++ \
+      git \
+      graphviz \
+      libgl1-mesa-glx \
+      libhdf5-dev \
+      openmpi-bin \
+      libsndfile1 \
+      wget && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install conda
+ENV CONDA_DIR /opt/conda
+ENV PATH $CONDA_DIR/bin:$PATH
+
+RUN wget --quiet --no-check-certificate https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh &&  /bin/bash /Miniconda3-latest-Linux-x86_64.sh -f -b -p $CONDA_DIR && \
+    rm Miniconda3-latest-Linux-x86_64.sh && \
+    echo export PATH=$CONDA_DIR/bin:'$PATH' > /etc/profile.d/conda.sh
+
+RUN conda create --name semql python=3.7
+RUN activate semql
+RUN pip install --upgrade pip
+RUN conda install pytorch torchvision cudatoolkit=10.1 -c pytorch
+RUN conda install -c conda-forge spacy
+RUN python -m spacy download en_core_web_sm
+RUN conda install -c anaconda numpy
+RUN pip install tqdm
+RUN pip install supervisor==4.0.2 \
+	coverage==4.5.1 \
+	flake8==3.5.0 \
+	Flask==1.0.2 \
+	Flask-Bcrypt==0.7.1 \
+	Flask-Migrate==2.2.0 \
+	Flask-SQLAlchemy==2.3.2 \
+	Flask-Testing==0.7.1\
+	Flask-WTF==0.14.2 \
+	Faker==1.0.7 \
+	factory_boy==2.9.0 \
+	python-dateutil==2.8.0 \
+	flask_cors==3.0.7 \
+	pymongo
+
+RUN git clone https://github.com/NVIDIA/apex
+RUN cd apex && pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./ && cd ../
+
+RUN pip install --no-cache-dir --upgrade nltk
+RUN pip install joblib
+RUN python -m nltk.downloader punkt
+RUN python -m nltk.downloader stopwords
+RUN python -m nltk.downloader nonbreaking_prefixes
+RUN python -m nltk.downloader perluniprops
+RUN pip install --no-cache-dir --upgrade flair
+RUN pip install func_timeout
+RUN pip install wget
+RUN pip install elasticsearch
+RUN pip install ftfy
+RUN pip install attrdict
+RUN pip install emoji
+RUN pip install mosestokenizer
+RUN pip install language_check
+RUN pip install pytorch-ignite
+RUN pip install datasets
+RUN pip install typing_extensions
+RUN pip install subword-nmt
+RUN pip install pytorch-pretrained-bert
+RUN pip install language_check
+RUN pip install tensorboard
+RUN pip install pydub
+RUN pip install torchaudio
+RUN pip install sentencepiece
+RUN pip install pyannote.audio==1.1.1
+
+RUN pip uninstall -y transformers
+
+RUN git clone https://github.com/pytorch/fairseq
+RUN cd fairseq && pip install --editable ./ && cd ../
+
+RUN git clone https://github.com/huggingface/transformers.git
+RUN cd transformers && python setup.py install && cd ../
+
+# Export Pythonpath to st_ch_de repo
+ENV PYTHONPATH=$PYTHONPATH:/cluster/home/dubelbog/ba_st/st_ch_de:/
