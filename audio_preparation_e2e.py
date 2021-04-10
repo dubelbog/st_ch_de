@@ -10,7 +10,7 @@ import shutil
 # local path
 root_path = "/Users/bdubel/Documents/ZHAW/BA/data/Swiss_Parliaments_Corpus/"
 root_path_data = root_path
-path_manifest_swiss = root_path + "test_sample.tsv"
+path_manifest_swiss = root_path + "train_all.tsv"
 clip_path = root_path + "clips/"
 mp3_path = root_path + "mp3/"
 feature_root = Path(root_path) / "fbank"
@@ -92,23 +92,23 @@ def preparation():
     print("start")
     manifest_swiss = open(path_manifest_swiss, "r")
     data_len = len(open(path_manifest_swiss).readlines())
-    dev_len = data_len * 0.2
-    test_len = data_len * 0.2
+    dev_len = data_len * 0.15
+    # test_len = data_len * 0.2
     train_manifest = {c: [] for c in MANIFEST_COLUMNS}
     dev_manifest = {c: [] for c in MANIFEST_COLUMNS}
-    test_manifest = {c: [] for c in MANIFEST_COLUMNS}
+    # test_manifest = {c: [] for c in MANIFEST_COLUMNS}
     train_text = []
     counter = 0
     train_counter = 0
     dev_counter = 0
-    test_counter = 0
+    # test_counter = 0
     for line in manifest_swiss:
         print(counter, " from ", data_len)
         if counter != 0:
-            if test_counter < test_len and counter % 2 == 0:
-                helper_preparation(line, train_text, test_manifest)
-                test_counter = test_counter + 1
-            elif dev_counter < dev_len and counter % 3 == 0:
+            # if test_counter < test_len and counter % 2 == 0:
+            #     helper_preparation(line, train_text, test_manifest)
+            #     test_counter = test_counter + 1
+            if dev_counter < dev_len and counter % 3 == 0:
                 helper_preparation(line, train_text, dev_manifest)
                 dev_counter = dev_counter + 1
             else:
@@ -117,7 +117,7 @@ def preparation():
         counter = counter + 1
         # generate manifest
     generate_manifest("dev", dev_manifest)
-    generate_manifest("test", test_manifest)
+    # generate_manifest("test", test_manifest)
     generate_manifest("train", train_manifest)
     spm_filename_prefix = f"spm_char_{task}"
     # Generate config YAML
