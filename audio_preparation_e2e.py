@@ -6,9 +6,9 @@ from pathlib import Path
 import pandas as pd
 import shutil
 
-# root_path = "/cluster/home/dubelbog/data/Swiss_Parliaments_Corpus/"
+root_path = "/cluster/home/dubelbog/data/Swiss_Parliaments_Corpus/"
 # local path
-root_path = "/Users/bdubel/Documents/ZHAW/BA/data/Swiss_Parliaments_Corpus/"
+# root_path = "/Users/bdubel/Documents/ZHAW/BA/data/Swiss_Parliaments_Corpus/"
 root_path_data = root_path
 path_manifest_swiss = root_path + "train_all.tsv"
 clip_path = root_path + "clips/"
