@@ -10,7 +10,7 @@ root_path = "/cluster/home/dubelbog/data/comon_voice_de/"
 # local path
 # root_path = "/Users/bdubel/Documents/ZHAW/BA/data/comon_voice_de/"
 root_path_data = root_path
-path_manifest_swiss = root_path + "train_small.tsv"
+path_manifest_swiss = root_path + "test.tsv"
 clip_path = root_path + "clips/"
 feature_root = Path(root_path) / "fbank"
 suffix_mp3 = ".mp3"
@@ -94,7 +94,7 @@ def preparation():
             helper_preparation(line, train_text, manifest)
         counter = counter + 1
         # generate manifest
-    generate_manifest("dev", manifest)
+    generate_manifest("test", manifest)
     spm_filename_prefix = f"spm_char_{task}"
     # Generate config YAML
     gen_config_yaml(
