@@ -54,7 +54,7 @@ def manifest_preparation(manifest, track, data, tgt_text, track_path):
 
 
 def audio_processing(data, manifest, tgt_text):
-    file = data[1].rsplit('/', 1)[1].replace(".npy", ".flac")
+    file = data[1].replace(".npy", ".flac")
     track_path = mp3_path + file + suffix_mp3
     audio_file = clip_path + file
     audio_file = AudioSegment.from_file(audio_file)
