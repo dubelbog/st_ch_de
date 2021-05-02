@@ -2,7 +2,7 @@ import os
 import pandas as pd
 from fairseq_cli_stchde.helper_utils import generate_manifest
 
-path_eval = "/Users/bdubel/Documents/ZHAW/BA/st_ch_de/resources/swiss"
+path_eval = "/Users/bdubel/Documents/ZHAW/BA/st_ch_de/resources/swiss/st_parl_dial"
 eval_docs = []
 checkpoints = []
 MANIFEST_COLUMNS = ["id", "target_txt", "checkpoint", "prediction"]
@@ -17,7 +17,7 @@ for file in os.listdir(path_eval):
 
 for text in range(eval_docs[0].shape[0]):
     id = eval_docs[0].values[text][0]
-    eval_manifest["id"].append(id)
+    eval_manifest["id"].append(id.split("  ")[1])
     target_txt = eval_docs[0].values[text][1]
     eval_manifest["target_txt"].append(target_txt)
     eval_manifest["checkpoint"].append("-")
@@ -26,9 +26,10 @@ for text in range(eval_docs[0].shape[0]):
         checkpoint = checkpoints[doc]
         eval_manifest["checkpoint"].append(checkpoint)
         eval_manifest["target_txt"].append(target_txt)
-        eval_manifest["id"].append(id)
+        eval_manifest["id"].append(id.split("  ")[1])
         prediction = eval_docs[doc].values[text][2]
         eval_manifest["prediction"].append(prediction)
 
-generate_manifest(eval_manifest, "/Users/bdubel/Documents/ZHAW/BA/st_ch_de/resources/swiss/overview/st_progress.tsv")
+generate_manifest(
+    eval_manifest, "/Users/bdubel/Documents/ZHAW/BA/st_ch_de/resources/swiss/st_parl_dial/overview/st_progress.tsv")
 
