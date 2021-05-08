@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import os
 
 def validation(root, checkpoints, config, manifest):
@@ -18,6 +19,7 @@ config = "config.yaml"
 test = "config_minus15_5_08"
 
 validation(root_parl, checkpoints_parl, config, test)
+print("finish")
 
 
 
