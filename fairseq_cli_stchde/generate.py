@@ -28,13 +28,15 @@ from fairseq_cli_stchde.helper_utils import get_evaluation_file_name, generate_m
 
 # START ba_st_ch code
 MANIFEST_COLUMNS = ["id", "target_txt", "prediction"]
-resource_path = "/Users/bdubel/Documents/ZHAW/BA/st_ch_de/resources/covost/"
+# target_path = "/Users/bogumiladubel/Documents/BA/repos/st_ch_de/resources/parl/train_prediction/"
+target_path = "/home/ubuntu/repos/st_ch_de/resources/ubuntu2/permutation/config_minus15_5_08/"
 # swiss data
 # resource_path = "/Users/bdubel/Documents/ZHAW/BA/st_ch_de/resources/swiss/"
-corpus_path = "/Users/bdubel/Documents/ZHAW/BA/data/covost/sv-SE/"
+# corpus_path = "/Users/bogumiladubel/Documents/BA/data/st/parl/"
+corpus_path = "/home/ubuntu/data/st/parl/pert/"
 # swiss data
 # corpus_path = "/Users/bdubel/Documents/ZHAW/BA/data/swiss_09/"
-f = open(Path(resource_path) / "overview/blue_scores.csv", "a")
+f = open(Path(target_path) / "overview/blue_scores.csv", "a")
 # END ba_st_ch code
 
 
@@ -107,7 +109,7 @@ def _main(cfg: DictConfig, output_file):
     eval_file_name, checkpoint = get_evaluation_file_name(str(cfg.common_eval.path))
     print(eval_file_name)
     eval_manifest = {c: [] for c in MANIFEST_COLUMNS}
-    eval_file_name = resource_path + eval_file_name
+    eval_file_name = target_path + eval_file_name
     # END ba_st_ch code
     # Load ensemble
     logger.info("loading model(s) from {}".format(cfg.common_eval.path))
@@ -271,7 +273,7 @@ def _main(cfg: DictConfig, output_file):
             df = pd.read_table(test_dataset)
             id = df.loc[[sample_id], ["id"]]
             print(id)
-            id = str(id).partition('\n')[2]
+            id = str(id).partition('\n')[2].split("  ")[1]
             print("id: ", id)
             print("-------------")
             # END ba_st_ch code
