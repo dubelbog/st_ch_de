@@ -28,12 +28,30 @@ from fairseq_cli_stchde.helper_utils import get_evaluation_file_name, generate_m
 
 # START ba_st_ch code
 MANIFEST_COLUMNS = ["id", "target_txt", "prediction"]
-resource_path = "/Users/bdubel/Documents/ZHAW/BA/st_ch_de/resources/covost/"
+# MANIFEST_COLUMNS = ["config", "id", "target_txt", "prediction"]
+# resource_path = "/Users/bdubel/Documents/ZHAW/BA/st_ch_de/resources/covost/"
 # swiss data
-# resource_path = "/Users/bdubel/Documents/ZHAW/BA/st_ch_de/resources/swiss/"
-corpus_path = "/Users/bdubel/Documents/ZHAW/BA/data/covost/sv-SE/"
+# resource_path = "/Users/bdubel/Documents/ZHAW/BA/st_ch_de/resources/swiss/all_dialects/"
+# resource_path = "/Users/bdubel/Documents/ZHAW/BA/st_ch_de/resources/swiss/all/"
+# resource_path = "/Users/bdubel/Documents/ZHAW/BA/st_ch_de/resources/swiss/swissdial/"
+# resource_path = "/Users/bdubel/Documents/ZHAW/BA/st_ch_de/resources/swiss/mix/"
+# resource_path = "/Users/bdubel/Documents/ZHAW/BA/st_ch_de/resources/swiss/asr_parl/"
+# resource_path = "/Users/bdubel/Documents/ZHAW/BA/st_ch_de/resources/swiss/asr_parl/swiss_dial/"
+# resource_path = "/Users/bdubel/Documents/ZHAW/BA/st_ch_de/resources/swiss/st_parl_dial/swiss_dial/"
+resource_path = "/Users/bdubel/Documents/ZHAW/BA/st_ch_de/resources/swiss/ensemble/"
+# resource_path = "/Users/bdubel/Documents/ZHAW/BA/st_ch_de/resources/swiss/st_parl_dial/"
+# resource_path = "/Users/bdubel/Documents/ZHAW/BA/st_ch_de/resources/swiss/asr_parl_dial/"
+# resource_path = "/Users/bdubel/Documents/ZHAW/BA/st_ch_de/resources/perturbation/"
+# corpus_path = "/Users/bdubel/Documents/ZHAW/BA/data/covost/sv-SE/"
 # swiss data
+# corpus_path = "/Users/bdubel/Documents/ZHAW/BA/data/Clickworker_Test_Set/"
 # corpus_path = "/Users/bdubel/Documents/ZHAW/BA/data/swiss_09/"
+# corpus_path = "/Users/bdubel/Documents/ZHAW/BA/data/swiss_50000/"
+# corpus_path = "/Users/bdubel/Documents/ZHAW/BA/data/swiss_all/perturbation/"
+# corpus_path = "/Users/bdubel/Documents/ZHAW/BA/data/swissdial_parl/"
+# corpus_path = "/Users/bdubel/Documents/ZHAW/BA/data/asr_parl_dial/"
+corpus_path = "/Users/bdubel/Documents/ZHAW/BA/data/swissdial_parl/parl_dial_asr/"
+# corpus_path = "/Users/bdubel/Documents/ZHAW/BA/data/eth_ch_dialects/"
 f = open(Path(resource_path) / "overview/blue_scores.csv", "a")
 # END ba_st_ch code
 
@@ -271,8 +289,12 @@ def _main(cfg: DictConfig, output_file):
             df = pd.read_table(test_dataset)
             id = df.loc[[sample_id], ["id"]]
             print(id)
-            id = str(id).partition('\n')[2]
+            id = str(id).partition('\n')[2].split("  ")[1]
             print("id: ", id)
+            # con = id.split("_")
+            # config = con[1] + " = " + str(con[2]) + " - " + con[3] + " = " \
+            #          + str(con[4]) + " - " + con[5] + " = " + str(con[6])
+            # print("config: ", config)
             print("-------------")
             # END ba_st_ch code
             src_str = decode_fn(src_str)
@@ -301,6 +323,7 @@ def _main(cfg: DictConfig, output_file):
                 eval_manifest["id"].append(id)
                 eval_manifest["target_txt"].append(target_str)
                 eval_manifest["prediction"].append(detok_hypo_str)
+                # eval_manifest["config"].append(config)
                 # END ba_st_ch code
                 if not cfg.common_eval.quiet:
                     score = hypo["score"] / math.log(2)  # convert to base 2

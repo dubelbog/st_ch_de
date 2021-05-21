@@ -666,6 +666,11 @@ def load_pretrained_component_from_model(
     mismatch in the architecture of the corresponding `component` found in the
     `checkpoint` file.
     """
+    if checkpoint == "/cluster/home/dubelbog/data/mix/parl_archimob_encoder_de_en/encoder/ch_encoder.pt":
+        checkpoint = "/Users/bdubel/Documents/ZHAW/BA/data/end_models/ch_encoder.pt"
+    else:
+        checkpoint = "/Users/bdubel/Documents/ZHAW/BA/data/end_models/encoder_de_en_avg.pt"
+
     if not PathManager.exists(checkpoint):
         raise IOError("Model file not found: {}".format(checkpoint))
     state = load_checkpoint_to_cpu(checkpoint)

@@ -9,7 +9,8 @@ hypsx = []
 
 # df = pd.read_table("/Users/bdubel/Documents/ZHAW/BA/st_ch_de/resources/swiss/evaluation300.tsv")
 # df = pd.read_table("/resources/swiss/100/avg_evaluation.tsv")
-df = pd.read_table("/Users/bdubel/Documents/ZHAW/BA/st_ch_de/resources/swiss/all/avg_evaluation_all.tsv")
+# df = pd.read_table("/Users/bdubel/Documents/ZHAW/BA/st_ch_de/resources/swiss/all/avg_evaluation_all.tsv")
+df = pd.read_table("/Users/bdubel/Documents/ZHAW/BA/st_ch_de/resources/swiss/ensemble/parl_archimob_asr.tsv")
 # df = pd.read_table("/Users/bdubel/Documents/ZHAW/BA/st_ch_de/resources/references/reference_prediction_tuples_with_metrics.tsv")
 
 references = []

@@ -2,13 +2,16 @@ import pandas as pd
 from data_utils import save_df_to_tsv, gen_vocab, gen_config_yaml
 from pathlib import Path
 
-MANIFEST_COLUMNS = ["id", "audio", "n_frames", "tgt_text", "speaker"]
+# MANIFEST_COLUMNS = ["id", "audio", "n_frames", "tgt_text", "speaker"]
+MANIFEST_COLUMNS = ["id", "audio", "n_frames", "tgt_text"]
 manifest = {c: [] for c in MANIFEST_COLUMNS}
-rootpath = "/Users/bogumiladubel/Documents/BA/data/asr/common_voice/de/"
-file = "train_asr_de.tsv"
+# rootpath = "/Users/bogumiladubel/Documents/BA/data/asr/common_voice/de/"
+rootpath = "/Users/bdubel/Documents/ZHAW/BA/data/swiss_all/"
+file = "train_st_ch_de.tsv"
 df = pd.read_table(rootpath + "original/" + file)
 train_text = []
-root_path_data = "/Users/bogumiladubel/Documents/BA/repos/st_ch_de/"
+# root_path_data = "/Users/bogumiladubel/Documents/BA/repos/st_ch_de/"
+root_path_data = "/Users/bdubel/Documents/ZHAW/BA/st_ch_de/"
 
 ALLOWED_CHARS = {
     'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
@@ -37,7 +40,7 @@ for t in range(df.shape[0]):
     target = preprocess_transcript(str(df.values[t][3]))
     train_text.append(target)
     manifest["tgt_text"].append(target)
-    manifest["speaker"].append(df.values[t][4])
+    # manifest["speaker"].append(df.values[t][4])
 
 df = pd.DataFrame.from_dict(manifest)
 save_df_to_tsv(df, Path(rootpath) / f"{file}")
