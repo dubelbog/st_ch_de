@@ -5,6 +5,7 @@ from data_utils import extract_fbank_features, save_df_to_tsv, gen_config_yaml, 
 from pathlib import Path
 import pandas as pd
 import shutil
+from num2words import num2words
 
 root_path = "/cluster/home/dubelbog/data/Swiss_Parliaments_Corpus/"
 # local path
@@ -30,15 +31,30 @@ def print_audio_infos(track):
     print("frame_count", track.frame_count())
 
 
-def text_processing(data):
-    tgt_text_arr = data[2:len(data) - 1]
-    tgt_text = " ".join(tgt_text_arr)
-    tgt_text = tgt_text.replace('ß', 'ss')
-    tgt_text = tgt_text.lower()
-    replace_signs = ['-', '–', "»", "«", ".", ",", "(", ")", "?", "!", "/", ":", ";", "]", "["]
-    for char in replace_signs:
-        tgt_text = tgt_text.replace(char, "")
-    return tgt_text
+ALLOWED_CHARS = {
+    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+    'ä', 'ö', 'ü',
+    ' ', '1', '2', '3', '4', '5', '6', '7', '8', '9'
+}
+
+
+def spell_out_numbers(transcript):
+    tokens = []
+    for token in transcript.split():
+        if token.isdigit():
+            token = num2words(token, lang='de')
+        tokens.append(token)
+    return ' '.join(tokens)
+
+
+def text_processing(transcript):
+    transcript = transcript.lower()
+    transcript = transcript.replace('ß', 'ss')
+    transcript = transcript.replace('-', ' ')
+    transcript = transcript.replace('–', ' ')
+    transcript = spell_out_numbers(transcript)
+    transcript = ''.join([char for char in transcript if char in ALLOWED_CHARS])
+    return transcript.strip()
 
 
 def manifest_preparation(manifest, track, data, tgt_text, track_path):
